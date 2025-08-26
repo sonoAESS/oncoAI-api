@@ -13,11 +13,19 @@ function removeToken() {
 }
 
 function showSections(show) {
-    document.getElementById("manual-section").style.display = show ? "block" : "none";
-    document.getElementById("batch-section").style.display = show ? "block" : "none";
-    document.getElementById("login-section").style.display = show ? "none" : "block";
-    document.getElementById("logout-section").style.display = show ? "block" : "none";
+    const manualSection = document.getElementById("manual-section");
+    if (manualSection) manualSection.style.display = show ? "block" : "none";
+
+    const batchSection = document.getElementById("batch-section");
+    if (batchSection) batchSection.style.display = show ? "block" : "none";
+
+    const loginSection = document.getElementById("login-section");
+    if (loginSection) loginSection.style.display = show ? "none" : "block";
+
+    const logoutSection = document.getElementById("logout-section");
+    if (logoutSection) logoutSection.style.display = show ? "block" : "none";
 }
+
 
 function showAuthForm(formName) {
     document.querySelectorAll('.auth-form').forEach(form => {
@@ -161,6 +169,9 @@ async function loginWithPassword(e) {
         }
 
         showSections(true);
+
+        // Redirect to dashboard
+        window.location.href = 'oncoai-dashboard.html';
 
         const userName = data.user?.name || username;
         showResult('loginResult', `✅ Bienvenido/a, ${userName}. Sesión iniciada correctamente.`, 'success');
