@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OncoAI - Autorización y Registro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="neon-dark.css" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="neon-glow">🧬 OncoAI Predictor</h1>
+            <p>Predicción de supervivencia a 3 años con inteligencia artificial</p>
+        </header>
+
+        <!-- Logout Section -->
+        <section id="logout-section" class="card" style="display: none;">
+            <div class="text-center">
+                <button id="logout-btn" class="btn btn-secondary">
+                    🚪 Cerrar Sesión
+                </button>
+            </div>
+        </section>
+
+        <!-- Login Section -->
+        <section id="login-section" class="card">
+            <h2>🔐 Iniciar Sesión</h2>
+
+            <!-- Auth Header -->
+            <div class="auth-header">
+                <h3>👤 Acceso al Sistema</h3>
+            </div>
+
+            <!-- Password Form -->
+            <form id="password-form" class="auth-form" style="display: block;">
+                <div class="form-group">
+                    <label for="username">👤 Nombre de usuario:</label>
+                    <input type="text" id="username" placeholder="tu_usuario" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">🔒 Contraseña:</label>
+                    <input type="password" id="password" placeholder="Tu contraseña" required />
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        🚀 Iniciar Sesión
+                    </button>
+                    <button type="button" id="register-btn" class="btn btn-secondary" style="margin-left: 10px;">
+                        📝 Registrarse
+                    </button>
+                </div>
+            </form>
+
+            <!-- Registration Form (initially hidden) -->
+            <form id="register-form" class="auth-form" style="display: none;">
+                <h3>📝 Crear Cuenta</h3>
+                <div class="form-group">
+                    <label for="reg-username">👤 Nombre de usuario:</label>
+                    <input type="text" id="reg-username" placeholder="tu_usuario" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-email">📧 Correo electrónico:</label>
+                    <input type="email" id="reg-email" placeholder="tu@email.com" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-fullname">👥 Nombre completo:</label>
+                    <input type="text" id="reg-fullname" placeholder="Tu nombre completo" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password">🔒 Contraseña:</label>
+                    <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required />
+                </div>
+
+                <div class="text-center">
+                    <button type="button" id="back-to-login" class="btn btn-secondary">
+                        ↩️ Volver al Login
+                    </button>
+                    <button type="button" id="submit-register" class="btn btn-primary" style="margin-left: 10px;">
+                        ✅ Crear Cuenta
+                    </button>
+                </div>
+            </form>
+
+            <!-- Login Result -->
+            <div id="loginResult" class="result" style="display: none;"></div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-3">
+            <p class="text-secondary">
+                Creado por <a href="https://github.com/sonoAESS" target="_blank" rel="noopener noreferrer"
+                    class="neon-link">Antonio Elias</a> •
+                <span id="api-status">🟢 API Conectada</span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="neon-auth.js"></script>
+</body>
+
+</html>

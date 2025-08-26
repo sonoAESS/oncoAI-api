@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OncoAI Dashboard - Predicción de Supervivencia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="neon-dark.css" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="neon-glow">🧬 OncoAI Predictor</h1>
+            <p>Predicción de supervivencia a 3 años con inteligencia artificial</p>
+        </header>
+
+        <!-- Botones para mostrar secciones -->
+        <div class="text-center mb-3">
+            <button onclick="showSection('manual')" class="btn btn-secondary">Predicción Manual</button>
+            <button onclick="showSection('batch')" class="btn btn-secondary">Predicción Masiva</button>
+        </div>
+
+        <!-- Manual Prediction Section -->
+        <section id="manual-section" class="card" style="display: none;">
+            <h2>🔍 Predicción Manual</h2>
+            <p class="text-secondary mb-3">Ingresa los valores de las 32 características requeridas:</p>
+
+            <form id="predictForm">
+                <table id="fieldsContainer" class="compact-form"></table>
+
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        🎯 Predecir Supervivencia
+                    </button>
+                </div>
+            </form>
+
+            <!-- Prediction Result -->
+            <div id="result" class="result" style="display: none;"></div>
+        </section>
+
+        <!-- Batch Prediction Section -->
+        <section id="batch-section" class="card" style="display: none;">
+            <h2>📊 Predicción Masiva</h2>
+            <p class="text-secondary mb-3">Sube un archivo CSV o Excel con los datos:</p>
+
+            <form id="batchForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="file-input-container">
+                        <input type="file" id="fileInput" accept=".csv,.xls,.xlsx" required />
+                        <label for="fileInput" class="file-input-label">
+                            📁 Seleccionar archivo CSV/Excel
+                        </label>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        ⚡ Procesar Lote
+                    </button>
+                </div>
+            </form>
+
+            <!-- Batch Result -->
+            <div id="batchResult" class="result" style="display: none;"></div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-3">
+            <p class="text-secondary">
+                Creado por <a href="https://github.com/sonoAESS" target="_blank" rel="noopener noreferrer"
+                    class="neon-link">Antonio Elias</a> •
+                <span id="api-status">🟢 API Conectada</span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="neon-dashboard.js"></script>
+</body>
+
+</html>
