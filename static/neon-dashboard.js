@@ -1,5 +1,46 @@
 const apiBaseUrl = "http://127.0.0.1:8000";
 
+function getToken() {
+    return localStorage.getItem("oncoai_token");
+}
+
+function setLoading(button, isLoading) {
+    if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = '<span class="loading"></span> Procesando...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = button.getAttribute('data-original-text') || 'Enviar';
+    }
+}
+
+function showResult(elementId, message, type = 'info') {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    element.innerHTML = message;
+    element.className = `result ${type}`;
+    element.style.display = 'block';
+}
+
+function clearResult(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    element.innerHTML = '';
+    element.style.display = 'none';
+    element.className = 'result';
+}
+
+function setLoading(button, isLoading) {
+    if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = '<span class="loading"></span> Procesando...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = button.getAttribute('data-original-text') || 'Enviar';
+    }
+}
+
+
 const genes = [
     "B2M", "C1QB", "C1QC", "CASP1", "CD2", "CD3E", "CD4", "CD74",
     "FCER1G", "FCGR3A", "IL10", "LCK", "LCP2", "LYN", "PTPRC", "SERPING1"
@@ -141,23 +182,34 @@ async function predictBatch(e) {
         const formData = new FormData();
         formData.append("file", fileInput.files[0]);
 
+        console.log('Archivo enviado:', fileInput.files[0]);
+        for (const pair of formData.entries()) {
+            console.log(pair[0] + ':', pair[1]);
+        }
+
         const response = await fetch(`${apiBaseUrl}/api/predict/batch_predict`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`
+                // No set Content-Type; browser will set multipart/form-data
             },
             body: formData
         });
 
+        console.log('Status respuesta:', response.status);
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
+            console.error('Error en respuesta:', errorData);
             throw new Error(errorData.detail || 'Error en la predicción batch');
         }
 
         const data = await response.json();
+
         displayBatchResults(data.predictions);
 
     } catch (error) {
+        console.error(error);
         showResult('batchResult', `❌ Error: ${error.message}`, 'error');
     } finally {
         setLoading(button, false);
@@ -166,13 +218,15 @@ async function predictBatch(e) {
 
 function displayBatchResults(predictions) {
     const container = document.getElementById('batchResult');
+    if (!container) return;
+
     let html = `
         <div class="result success">
             <h4>📊 Resultados de Predicción Batch</h4>
             <div class="batch-results">
     `;
 
-    predictions.forEach((result, index) => {
+    predictions.forEach((result) => {
         const probability = (result.survival_probability * 100).toFixed(2);
         const rowClass = result.survival_probability >= 0.5 ? 'success' : 'error';
 
@@ -192,6 +246,7 @@ function displayBatchResults(predictions) {
     `;
 
     container.innerHTML = html;
+    container.style.display = 'block';
 }
 
 function showSection(section) {
