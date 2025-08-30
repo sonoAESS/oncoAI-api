@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OncoAI Landing Page</title>
+    <link rel="stylesheet" href="neon-dark.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="neon-glow">🧬 OncoAI Predictor</h1>
+            <p>Predicción de supervivencia a 3 años con inteligencia artificial</p>
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#models">Models</a></li>
+                    <li id="auth-link"><a href="oncoai-auth.html#login">Login</a></li>
+                    <li id="logout-link" style="display: none;"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section id="about" class="card">
+                <h2>About OncoAI</h2>
+                <p>OncoAI is a project dedicated to providing advanced oncology predictions using machine learning models. Our goal is to assist healthcare professionals in making informed decisions.</p>
+            </section>
+
+            <section id="models" class="card">
+                <h2>Our Models</h2>
+                <p id="models-description">We offer predictive models to help in oncology. Please authenticate to access our models.</p>
+                <div id="models-container" style="display: none;">
+                    <p>Click on a model to make predictions:</p>
+                    <ul>
+                        <li><a href="oncoai-model-survival.html">🧬 Survival Prediction Model</a></li>
+                    </ul>
+                </div>
+                <div id="auth-prompt" style="text-align: center; margin-top: 1rem;">
+                    <a href="oncoai-auth.html#login" class="btn btn-primary">🔐 Authenticate to Access Models</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-3">
+            <p class="text-secondary">
+                Creado por <a href="https://github.com/sonoAESS" target="_blank" rel="noopener noreferrer" class="neon-link">Antonio Elias</a> •
+                <span id="api-status">🟢 API Conectada</span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="neon-landing.js"></script>
+</body>
+</html>

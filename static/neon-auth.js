@@ -170,8 +170,8 @@ async function loginWithPassword(e) {
 
         showSections(true);
 
-        // Redirect to dashboard
-        window.location.href = 'oncoai-dashboard.html';
+        // Redirect to landing page after successful login
+        window.location.href = 'oncoai-landing.html';
 
         const userName = data.user?.name || username;
         showResult('loginResult', `✅ Bienvenido/a, ${userName}. Sesión iniciada correctamente.`, 'success');
@@ -182,6 +182,7 @@ async function loginWithPassword(e) {
         setLoading(button, false);
     }
 }
+
 
 function logout() {
     removeToken();
@@ -239,6 +240,15 @@ function setupAuthEventListeners() {
         showRegistrationForm(false);
         clearResult('loginResult');
     });
+}
+
+function redirectToDashboard() {
+    const token = localStorage.getItem('oncoai_token');
+    if (token) {
+        window.location.href = 'oncoai-model-survival.html';
+    } else {
+        window.location.href = 'oncoai-landing.html';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initAuth);

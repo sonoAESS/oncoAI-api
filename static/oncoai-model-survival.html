@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OncoAI Dashboard - Predicción de Supervivencia</title>
+    <title>OncoAI - Modelo de Predicción de Supervivencia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -14,10 +14,10 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <header class="header">
-            <h1 class="neon-glow">🧬 OncoAI Predictor</h1>
-            <p>Predicción de supervivencia a 3 años con inteligencia artificial</p>
-        </header>
+<header class="header">
+    <h1 class="neon-glow"><a href="oncoai-landing.html" style="text-decoration: none; color: inherit;">🧬 OncoAI Predictor</a></h1>
+</header>
+
 
         <!-- Botones para mostrar secciones -->
         <div class="text-center mb-3">
@@ -32,7 +32,6 @@
 
             <form id="predictForm">
                 <table id="fieldsContainer" class="compact-form"></table>
-
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">
@@ -81,7 +80,17 @@
         </footer>
     </div>
 
-    <script src="neon-dashboard.js"></script>
+    <script>
+        // Check for authentication token (using localStorage for consistency)
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('oncoai_token');
+            if (!token) {
+                window.location.href = 'oncoai-landing.html#login';
+            }
+        });
+    </script>
+
+    <script src="neon-model-survival.js"></script>
 </body>
 
 </html>

@@ -48,11 +48,15 @@ except Exception as e:
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:7000",
+    "http://127.0.0.1:7000",
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://127.0.0.1:5500",
-    "https://tu-dominio-produccion.com"
+    "http://127.0.0.1:5500"
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -68,6 +72,12 @@ app.include_router(auth_router, prefix="/auth", tags=["Autenticación"])
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Serve landing page
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/static/oncoai-landing.html")
+
 
 @app.get("/")
 async def root():
