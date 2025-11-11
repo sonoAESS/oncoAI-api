@@ -102,3 +102,7 @@ async def batch_predict(file: UploadFile = File(...), current_user=Depends(get_c
 
     results = [{"row": i, "survival_probability": p} for i, p in enumerate(preds)]
     return {"predictions": results}
+
+@router.get("/health")
+def health_check():
+    return {"status": "healthy prediction"}

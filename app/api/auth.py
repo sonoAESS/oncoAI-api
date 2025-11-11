@@ -13,7 +13,17 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-@router.post("/register", response_model=UserResponse)
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    summary="Register a new user",
+    description=(
+        "Registers a new user in the system using a username, password, full name, and email. "
+        "Returns the user's public profile without sensitive data. "
+        "Fails if the username or email is already taken."
+    ),
+    status_code=status.HTTP_201_CREATED
+)
 def register_user(user_data: RegisterRequest, db: Session = Depends(get_db)):
     """
     Register a new user with username and password.
@@ -74,7 +84,16 @@ def register_user(user_data: RegisterRequest, db: Session = Depends(get_db)):
     return RedirectResponse(url="/static/oncoai-landing.html#login", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@router.post("/login", response_model=Token)
+@router.post(
+    "/login",
+    response_model=Token,
+    summary="Authenticate and log in a user",
+    description=(
+        "Authenticates a user with username and password. "
+        "If valid, returns an access token (JWT) that can be used for protected endpoints. "
+        "The token is also set as an HTTP-only cookie for browser-based clients."
+    )
+)
 def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
     """
     Login user with username and password.
@@ -116,3 +135,7 @@ def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
     response = RedirectResponse(url="/static/oncoai-dashboard.html", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(key="access_token", value=access_token, httponly=True)
     return response
+
+@router.get("/health")
+def health_check():
+    return {"status": "healthy auth"}

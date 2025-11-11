@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 import logging
 import os
 from dotenv import load_dotenv
+from fastapi.responses import RedirectResponse
 
 # Load environment variables from .env file
 load_dotenv()
