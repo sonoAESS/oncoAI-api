@@ -46,6 +46,17 @@ const genes = [
     "FCER1G", "FCGR3A", "IL10", "LCK", "LCP2", "LYN", "PTPRC", "SERPING1"
 ];
 
+const requiredFields = [
+    'B2M_expression', 'B2M_scna', 'C1QB_expression', 'C1QB_scna',
+    'C1QC_expression', 'C1QC_scna', 'CASP1_expression', 'CASP1_scna',
+    'CD2_expression', 'CD2_scna', 'CD3E_expression', 'CD3E_scna',
+    'CD4_expression', 'CD4_scna', 'CD74_expression', 'CD74_scna',
+    'FCER1G_expression', 'FCER1G_scna', 'FCGR3A_expression', 'FCGR3A_scna',
+    'IL10_expression', 'IL10_scna', 'LCK_expression', 'LCK_scna',
+    'LCP2_expression', 'LCP2_scna', 'LYN_expression', 'LYN_scna',
+    'PTPRC_expression', 'PTPRC_scna', 'SERPING1_expression', 'SERPING1_scna'
+];
+
 function createInputFields() {
     const fieldsContainer = document.getElementById("fieldsContainer");
     fieldsContainer.innerHTML = '';
@@ -129,7 +140,7 @@ async function predictManual(e) {
             return isNaN(value) ? 0 : value;
         });
 
-        const response = await fetch(`${apiBaseUrl}/api/predict/`, {
+        const response = await fetch(`${apiBaseUrl}/api/lgg_survival/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -187,7 +198,7 @@ async function predictBatch(e) {
             console.log(pair[0] + ':', pair[1]);
         }
 
-        const response = await fetch(`${apiBaseUrl}/api/predict/batch_predict`, {
+        const response = await fetch(`${apiBaseUrl}/api/lgg_survival/batch_predict`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`

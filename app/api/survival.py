@@ -12,22 +12,95 @@ from app.core.model import model_predict
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/lgg_survival", tags=["lgg_survival"])
+router = APIRouter(prefix="/lgg_survival")
 
-@router.post("/", response_model=SurvivalOutput)
+@router.post(
+    "/",
+    response_model=SurvivalOutput,
+    summary="Predict LGG survival probability",
+    description=(
+        "Predicts the survival probability for Lower Grade Glioma (LGG) cancer patients "
+        "based on 32 molecular and clinical features. The model uses machine learning "
+        "to analyze gene expression levels and somatic copy number alterations (SCNA) "
+        "to provide a survival probability score between 0 and 1."
+    ),
+    responses={
+        200: {
+            "description": "Prediction successful",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "survival_probability": 0.85
+                    }
+                }
+            }
+        },
+        400: {
+            "description": "Invalid input data",
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "wrong_feature_count": {
+                            "summary": "Incorrect number of features",
+                            "value": {"detail": "Se requieren 32 características para el modelo"}
+                        },
+                        "non_numeric_features": {
+                            "summary": "Non-numeric features",
+                            "value": {"detail": "Las características deben ser numéricas"}
+                        }
+                    }
+                }
+            }
+        },
+        401: {
+            "description": "Authentication required",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Not authenticated"}
+                }
+            }
+        },
+        422: {
+            "description": "Validation Error",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": [
+                            {
+                                "loc": ["body", "features"],
+                                "msg": "ensure this value has at least 32 items",
+                                "type": "value_error.const"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+)
 async def predict_survival(data: SurvivalInput, current_user=Depends(get_current_active_user)):
     """
-    Predict survival probability based on input features.
+    Predict LGG survival probability from molecular features.
 
-    Parameters:
-    - data (SurvivalInput): An object containing the input features for the prediction.
-        - features (List[float]): A list of 32 numerical features for the prediction.
+    This endpoint analyzes 32 specific molecular features including gene expression levels
+    and somatic copy number alterations (SCNA) to predict patient survival probability.
 
-    Returns:
-    - SurvivalOutput: An object containing the survival probability.
+    **Required Features (32 total):**
+    - **Gene Expression Features (16):** B2M, C1QB, C1QC, CASP1, CD2, CD3E, CD4, CD74, FCER1G, FCGR3A, IL10, LCK, LCP2, LYN, PTPRC, SERPING1
+    - **SCNA Features (16):** Corresponding _scna variants for each gene above
 
-    Raises:
-    - HTTPException: If the number of features is not 32 or if the features are not numeric.
+    **Parameters:**
+    - **data** (SurvivalInput): Input data containing feature array
+        - **features** (List[float]): Array of 32 numerical values representing molecular features
+
+    **Returns:**
+    - **SurvivalOutput**: Prediction result
+        - **survival_probability** (float): Predicted survival probability (0.0 to 1.0)
+
+    **Raises:**
+    - **400 Bad Request**: Invalid feature count or non-numeric values
+    - **401 Unauthorized**: Missing or invalid authentication token
+    - **422 Unprocessable Entity**: Invalid input format
     """
     if len(data.features) != 32:
         raise HTTPException(status_code=400, detail="Se requieren 32 características para el modelo")

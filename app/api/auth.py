@@ -84,27 +84,76 @@ def register_user(user_data: RegisterRequest, db: Session = Depends(get_db)):
 @router.post(
     "/login",
     response_model=Token,
-    summary="Authenticate and log in a user",
+    summary="Authenticate user and obtain access token",
     description=(
-        "Authenticates a user with username and password. "
-        "If valid, returns an access token (JWT) that can be used for protected endpoints. "
-        "The token is also set as an HTTP-only cookie for browser-based clients."
-    )
+        "Authenticates a user with username and password credentials. "
+        "Upon successful authentication, returns a JWT access token for accessing protected endpoints. "
+        "The token should be included in the Authorization header as 'Bearer {token}' for subsequent requests."
+    ),
+    responses={
+        200: {
+            "description": "Authentication successful",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "token_type": "bearer",
+                        "user": {
+                            "username": "johndoe",
+                            "name": "John Doe",
+                            "email": "john.doe@example.com"
+                        }
+                    }
+                }
+            }
+        },
+        401: {
+            "description": "Authentication failed",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid username or password"}
+                }
+            }
+        },
+        422: {
+            "description": "Validation Error",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": [
+                            {
+                                "loc": ["body", "username"],
+                                "msg": "field required",
+                                "type": "value_error.missing"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
 )
 def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
     """
-    Login user with username and password.
+    Authenticate user and obtain JWT access token.
 
-    Parameters:
-    - login_data (LoginRequest): An object containing the user's login details.
-        - username (str): The username of the user.
-        - password (str): The password of the user.
+    **Parameters:**
+    - **login_data** (LoginRequest): User login credentials
+        - **username** (str): User's username
+        - **password** (str): User's password
 
-    Returns:
-    - Token: An object containing the access token, token type, and user information.
+    **Returns:**
+    - **Token**: Authentication token and user information
+        - **access_token** (str): JWT access token
+        - **token_type** (str): Token type (always "bearer")
+        - **user** (dict): User profile information
+            - **username** (str): User's username
+            - **name** (str): User's full name
+            - **email** (str): User's email address
 
-    Raises:
-    - HTTPException: If the username or password is incorrect.
+    **Raises:**
+    - **401 Unauthorized**: Invalid username or password
+    - **422 Unprocessable Entity**: Invalid input data
     """
     logger.info(f"Logging in user: {login_data.username}")
     try:
@@ -134,6 +183,27 @@ def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
         user={"username": user.username, "name": user.full_name, "email": user.email}
     )
 
-@router.get("/health")
+@router.get(
+    "/health",
+    summary="Check authentication service health",
+    description="Returns the health status of the authentication service and database connectivity.",
+    responses={
+        200: {
+            "description": "Service is healthy",
+            "content": {
+                "application/json": {
+                    "example": {"status": "healthy auth"}
+                }
+            }
+        }
+    }
+)
 def health_check():
+    """
+    Check authentication service health status.
+
+    **Returns:**
+    - **dict**: Health status information
+        - **status** (str): Always "healthy auth" if service is running
+    """
     return {"status": "healthy auth"}

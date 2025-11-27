@@ -139,14 +139,14 @@ async function loginWithPassword(e) {
 
     try {
         console.log("Intentando login con:", username);
-        const response = await fetch(`${apiBaseUrl}/token`, {
+        const response = await fetch(`${apiBaseUrl}/auth/login`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/json"
             },
-            body: new URLSearchParams({
-                'username': username,
-                'password': password
+            body: JSON.stringify({
+                username: username,
+                password: password
             })
         });
 

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 import logging
 import os
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,10 +24,28 @@ from app.core.utils import verify_password
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for FastAPI application.
+
+    Handles startup and shutdown events using the modern lifespan approach.
+    """
+    # Startup
+    logger.info("OncoAI API starting up...")
+    logger.info(f"Database URL: {DATABASE_URL}")
+    logger.info(f"Model loaded: {model is not None}")
+
+    yield
+
+    # Shutdown
+    logger.info("OncoAI API shutting down...")
+
 app = FastAPI(
     title="OncoAI Survival Prediction API",
     description="API para predicción de supervivencia en cáncer utilizando machine learning",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Ensure required environment variables are set
@@ -69,13 +88,41 @@ app.add_middleware(
 app.include_router(survival.router, prefix="/api", tags=["Predicción"])
 app.include_router(auth_router, prefix="/auth", tags=["Autenticación"])
 
-@app.get("/")
+@app.get(
+    "/",
+    summary="API Information",
+    description="Returns basic information about the OncoAI Survival Prediction API, including version and available endpoints.",
+    responses={
+        200: {
+            "description": "API information retrieved successfully",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "message": "OncoAI Survival Prediction Service",
+                        "version": "1.0.0",
+                        "docs": "/docs",
+                        "health": "/health"
+                    }
+                }
+            }
+        }
+    }
+)
 async def root():
     """
-    Root endpoint that returns basic information about the API.
+    Get API information and available endpoints.
 
-    Returns:
-    - dict: A dictionary containing the API message, version, documentation URL, and health check URL.
+    Returns basic information about the API service including:
+    - Service description and version
+    - Links to API documentation
+    - Health check endpoint
+
+    **Returns:**
+    - **dict**: API information
+        - **message** (str): Service description
+        - **version** (str): API version
+        - **docs** (str): URL to API documentation
+        - **health** (str): URL to health check endpoint
     """
     return {
         "message": "OncoAI Survival Prediction Service",
@@ -84,13 +131,51 @@ async def root():
         "health": "/health"
     }
 
-@app.get("/health")
+@app.get(
+    "/health",
+    summary="API Health Check",
+    description="Checks the overall health status of the API, including database connectivity and model loading status.",
+    responses={
+        200: {
+            "description": "API is healthy",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "healthy",
+                        "database": "connected",
+                        "model_loaded": True
+                    }
+                }
+            }
+        },
+        503: {
+            "description": "Service unavailable",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "unhealthy",
+                        "database": "disconnected",
+                        "model_loaded": False
+                    }
+                }
+            }
+        }
+    }
+)
 async def health_check():
     """
-    Health check endpoint to verify that the API is functioning.
+    Check overall API health status.
 
-    Returns:
-    - dict: A dictionary containing the health status, database connection status, and model loading status.
+    Performs comprehensive health checks on all critical components:
+    - Database connectivity
+    - Machine learning model loading status
+    - General API responsiveness
+
+    **Returns:**
+    - **dict**: Health status information
+        - **status** (str): Overall health status ("healthy" or "unhealthy")
+        - **database** (str): Database connection status ("connected" or "disconnected")
+        - **model_loaded** (bool): Whether the ML model is loaded and ready
     """
     return {
         "status": "healthy",
@@ -135,23 +220,4 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         "user": {"username": user.username, "name": user.full_name, "email": user.email}
     }
 
-# Event handlers
-@app.on_event("startup")
-async def startup_event():
-    """
-    Event handler for application startup.
 
-    Logs the startup event and relevant information.
-    """
-    logger.info("OncoAI API starting up...")
-    logger.info(f"Database URL: {DATABASE_URL}")
-    logger.info(f"Model loaded: {model is not None}")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """
-    Event handler for application shutdown.
-
-    Logs the shutdown event.
-    """
-    logger.info("OncoAI API shutting down...")
