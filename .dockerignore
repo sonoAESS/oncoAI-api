@@ -1,0 +1,36 @@
+# === Copiado directamente de tu .gitignore ===
+entorno/
+.vscode/
+*.csv
+models/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pytest_cache
+venv/
+env/
+ENV/
+.ipynb_checkpoints
+*.log
+*.sqlite3
+.DS_Store
+Thumbs.db
+*.out
+*.exe
+*.env
+.gitignore
+.zencoder
+*.db
+
+# === Añadido específicamente para Docker ===
+# Archivos de configuración de Docker mismo (no se copian al contenedor)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentación y metadatos (no usados en runtime)
+README.md
+LICENSE
+.git/
+.github/
