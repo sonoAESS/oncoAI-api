@@ -80,9 +80,6 @@ def register_user(user_data: RegisterRequest, db: Session = Depends(get_db)):
         logger.exception(f"Error registering user: {e}")
         raise
 
-    # Redirect to login page after successful registration
-    return RedirectResponse(url="/static/oncoai-landing.html#login", status_code=status.HTTP_303_SEE_OTHER)
-
 
 @router.post(
     "/login",
@@ -131,10 +128,11 @@ def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
     access_token = create_access_token(data={"sub": user.username})
     logger.info(f"Login successful for user: {user.username}")
 
-    # Redirect to dashboard after successful login
-    response = RedirectResponse(url="/static/oncoai-dashboard.html", status_code=status.HTTP_303_SEE_OTHER)
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
-    return response
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        user={"username": user.username, "name": user.full_name, "email": user.email}
+    )
 
 @router.get("/health")
 def health_check():

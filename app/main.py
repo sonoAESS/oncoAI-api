@@ -1,12 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 import logging
 import os
 from dotenv import load_dotenv
-from fastapi.responses import RedirectResponse
 
 # Load environment variables from .env file
 load_dotenv()
@@ -70,15 +68,6 @@ app.add_middleware(
 # Include routers
 app.include_router(survival.router, prefix="/api", tags=["Predicción"])
 app.include_router(auth_router, prefix="/auth", tags=["Autenticación"])
-
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Serve landing page
-@app.get("/")
-async def root():
-    return RedirectResponse(url="/static/oncoai-landing.html")
-
 
 @app.get("/")
 async def root():
@@ -145,9 +134,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         "token_type": "bearer",
         "user": {"username": user.username, "name": user.full_name, "email": user.email}
     }
-
-# Serve static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Event handlers
 @app.on_event("startup")

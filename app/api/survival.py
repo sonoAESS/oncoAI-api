@@ -12,7 +12,7 @@ from app.core.model import model_predict
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/predict", tags=["predict"])
+router = APIRouter(prefix="/lgg_survival", tags=["lgg_survival"])
 
 @router.post("/", response_model=SurvivalOutput)
 async def predict_survival(data: SurvivalInput, current_user=Depends(get_current_active_user)):
